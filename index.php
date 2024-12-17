@@ -1,11 +1,20 @@
 <?php
 
+session_start();
+
 require "config.php";
 require "function.php";
 
+if(isset($_GET["deco"])) {
+    session_unset();
+    session_destroy();
+    session_start();
+}
 
-if (isset($_SESSION["connected"])) {
-    echo "zzz";
+
+
+if (isset($_SESSION["username"])) {
+    header("Location: admin.php?status=connected");
 }
 
 $articles = get_articles($pdo);
@@ -22,13 +31,15 @@ $articles = get_articles($pdo);
 <body>
     <header>
         <h1>Mon Blog</h1>
-        <a href="login.php">Admin</a>
+        <a href="login.php">Connexion Admin</a>
     </header>
     <?php foreach ($articles as $article): ?>
-        <h2><?= htmlspecialchars($article["title"]) ?></h2>
-        <p><?= htmlspecialchars($article["content"]) ?></p>
-        <p><?= htmlspecialchars($article["created_at"]) ?></p>
-        <a href="article.php?id=<?=$article['id']?>">Lire plus</a>
+        <div>
+            <h2><?= htmlspecialchars($article["title"]) ?></h2>
+            <p><?= htmlspecialchars($article["content"]) ?></p>
+            <p><?= htmlspecialchars($article["created_at"]) ?></p>
+            <a href="article.php?id=<?=$article['id']?>">Lire plus</a>
+        </div>
     <?php endforeach; ?>
 </body>
 </html>

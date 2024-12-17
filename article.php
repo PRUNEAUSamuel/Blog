@@ -1,12 +1,23 @@
 <?php
+session_start();
 
 require "config.php";
 require "function.php";
 
-$article = get_article($pdo, $_GET["id"]);
-$commentaires = get_commentaires($pdo, $_GET["id"]);
+if(isset($_GET["id"])) {
+    $id = $_GET["id"];
+}
 
-var_dump($commentaires);
+
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    if (isset($_POST["author"]) && isset($_POST["comm"])) {
+        push_commentaire($pdo, $id, $_POST["author"], $_POST["comm"]); 
+    }
+}
+
+$article = get_article($pdo, $id);
+$commentaires = get_article_commentaires($pdo, $id);
+
 ?>
 
 
@@ -18,6 +29,7 @@ var_dump($commentaires);
     <title>Article</title>
 </head>
 <body>
+    <a href="index.php">Blog</a>
     <h1><?= htmlspecialchars($article["title"]) ?></h1>
     <p><?= htmlspecialchars($article["content"]) ?></p>
     <p><?= htmlspecialchars($article["created_at"]) ?></p>
